@@ -17,14 +17,14 @@ export async function POST(request) {
 
   const prompt = `Você é um editor de um blog de tecnologia brasileiro chamado TudoTecno.
 
-Leia o artigo abaixo e escreva um resumo com no máximo 280 caracteres.
+Leia o artigo abaixo e escreva um resumo com ENTRE 260 E 295 caracteres (obrigatório — conte os caracteres antes de responder).
 
 Regras obrigatórias:
-- Mencione nomes específicos presentes no artigo (empresas, produtos, marcas, bancos, apps, etc.)
-- Inclua o benefício ou ação principal do artigo
+- Mencione nomes específicos presentes no artigo (empresas, produtos, marcas, modelos, apps, etc.)
+- Inclua dois ou três detalhes concretos do conteúdo
 - Seja direto e informativo, como um lead jornalístico
-- NÃO use frases genéricas como "Saiba como", "Veja como", "Descubra" — vá direto ao ponto
-- NÃO inclua "O post apareceu primeiro em" nem nenhum rodapé de RSS
+- NÃO comece com "Saiba como", "Veja como", "Descubra", "Aprenda" — vá direto ao ponto
+- NÃO inclua "O post apareceu primeiro em" nem rodapé de RSS
 
 Título: ${title}
 ${category ? `Categoria: ${category}` : ''}

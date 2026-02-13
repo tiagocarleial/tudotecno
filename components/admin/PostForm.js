@@ -14,6 +14,7 @@ const CATEGORIES = [
 
 function cleanExcerpt(text) {
   return (text || '')
+    .replace(/Tempo de leitura:\s*\d+\s*minutos?/gi, '')
     .replace(/O post .+? apareceu primeiro em .+?\./gi, '')
     .replace(/\s+/g, ' ')
     .trim();
