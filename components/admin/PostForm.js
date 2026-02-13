@@ -44,6 +44,8 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [error, setError] = useState('');
   const [titleLoading, setTitleLoading] = useState(false);
   const [titleError, setTitleError] = useState('');
+  const [excerptLoading, setExcerptLoading] = useState(false);
+  const [excerptError, setExcerptError] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
   const [imgLoading, setImgLoading] = useState(false);
@@ -122,6 +124,33 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       setTitleError(err.message);
     } finally {
       setTitleLoading(false);
+    }
+  }
+
+  async function generateExcerpt() {
+    if (!form.title) {
+      setExcerptError('Preencha o título antes de gerar o resumo.');
+      return;
+    }
+    setExcerptError('');
+    setExcerptLoading(true);
+    try {
+      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const res = await fetch('/api/ai/generate-excerpt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: form.title, category: categoryName }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setExcerptError(data.error || 'Erro ao gerar resumo');
+        return;
+      }
+      setForm(f => ({ ...f, excerpt: data.excerpt.slice(0, 300) }));
+    } catch (err) {
+      setExcerptError(err.message);
+    } finally {
+      setExcerptLoading(false);
     }
   }
 
@@ -254,9 +283,27 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
 
         {/* Excerpt */}
         <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">
-            Resumo <span className="text-[var(--text-weak)] font-normal">({form.excerpt.length}/300)</span>
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-medium)]">
+              Resumo <span className="text-[var(--text-weak)] font-normal">({form.excerpt.length}/300)</span>
+            </label>
+            <button
+              type="button"
+              onClick={generateExcerpt}
+              disabled={excerptLoading || loading}
+              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+            >
+              {excerptLoading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>✦ Gerar resumo</>
+              )}
+            </button>
+          </div>
+          {excerptError && <p className="text-xs text-red-600 mb-1.5">{excerptError}</p>}
           <textarea
             value={form.excerpt}
             onChange={set('excerpt')}
