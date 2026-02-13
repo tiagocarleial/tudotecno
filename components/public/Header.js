@@ -22,8 +22,8 @@ export default function Header() {
       {/* Top bar */}
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center">
         {/* Logo */}
-        <Link href="/" className="shrink-0">
-          <img src="/logo.png" alt="TudoTecno" className="h-8 w-auto" />
+        <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1">
+          <img src="/logo.png" alt="TudoTecno" className="h-7 w-auto" />
         </Link>
 
         {/* Desktop nav links — centralizadas */}
