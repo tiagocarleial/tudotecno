@@ -1,10 +1,10 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Groq from 'groq-sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GROQ_API_KEY) {
     return NextResponse.json(
-      { error: 'GEMINI_API_KEY não configurada' },
+      { error: 'GROQ_API_KEY não configurada' },
       { status: 500 }
     );
   }
@@ -32,12 +32,15 @@ Instruções:
 - Escreva apenas o corpo do artigo, sem introdução do tipo "Aqui está o artigo:"`;
 
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-    const result = await model.generateContent(prompt);
-    const content = result.response.text();
+    const completion = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1024,
+    });
 
+    const content = completion.choices[0]?.message?.content || '';
     return NextResponse.json({ content });
   } catch (err) {
     console.error('[AI generate-content]', err);
