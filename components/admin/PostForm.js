@@ -12,6 +12,13 @@ const CATEGORIES = [
   { id: 6, name: 'Mercado' },
 ];
 
+function cleanExcerpt(text) {
+  return (text || '')
+    .replace(/O post .+? apareceu primeiro em .+?\./gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function autoSlug(title) {
   return title
     .toLowerCase()
@@ -29,7 +36,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [form, setForm] = useState({
     title:       post?.title       || '',
     slug:        post?.slug        || '',
-    excerpt:     post?.excerpt     || '',
+    excerpt:     cleanExcerpt(post?.excerpt),
     content:     post?.content     || '',
     cover_image: post?.cover_image || '',
     category_id: post?.category_id || 1,
@@ -146,7 +153,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
         setExcerptError(data.error || 'Erro ao gerar resumo');
         return;
       }
-      setForm(f => ({ ...f, excerpt: data.excerpt.slice(0, 300) }));
+      setForm(f => ({ ...f, excerpt: cleanExcerpt(data.excerpt).slice(0, 300) }));
     } catch (err) {
       setExcerptError(err.message);
     } finally {
