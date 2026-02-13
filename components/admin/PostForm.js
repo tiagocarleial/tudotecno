@@ -58,6 +58,8 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [aiError, setAiError] = useState('');
   const [imgLoading, setImgLoading] = useState(false);
   const [imgError, setImgError] = useState('');
+  const [imgAiLoading, setImgAiLoading] = useState(false);
+  const [imgAiError, setImgAiError] = useState('');
 
   useEffect(() => {
     if (!slugTouched && form.title) {
@@ -191,6 +193,33 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       setAiError(err.message);
     } finally {
       setAiLoading(false);
+    }
+  }
+
+  async function generateAIImage() {
+    if (!form.title) {
+      setImgAiError('Preencha o título antes de gerar a imagem.');
+      return;
+    }
+    setImgAiError('');
+    setImgAiLoading(true);
+    try {
+      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const res = await fetch('/api/ai/generate-image-ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: form.title, category: categoryName, content: form.content }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setImgAiError(data.error || 'Erro ao gerar imagem');
+        return;
+      }
+      setForm(f => ({ ...f, cover_image: data.image_url }));
+    } catch (err) {
+      setImgAiError(err.message);
+    } finally {
+      setImgAiLoading(false);
     }
   }
 
@@ -358,23 +387,41 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-[var(--text-medium)]">URL da imagem de capa</label>
-            <button
-              type="button"
-              onClick={generateCoverImage}
-              disabled={imgLoading || loading}
-              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-            >
-              {imgLoading ? (
-                <>
-                  <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Buscando...
-                </>
-              ) : (
-                <>✦ Gerar capa da fonte</>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={generateCoverImage}
+                disabled={imgLoading || imgAiLoading || loading}
+                className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+              >
+                {imgLoading ? (
+                  <>
+                    <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Buscando...
+                  </>
+                ) : (
+                  <>✦ Capa da fonte</>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={generateAIImage}
+                disabled={imgLoading || imgAiLoading || loading}
+                className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              >
+                {imgAiLoading ? (
+                  <>
+                    <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Gerando...
+                  </>
+                ) : (
+                  <>✦ Gerar imagem com IA</>
+                )}
+              </button>
+            </div>
           </div>
           {imgError && <p className="text-xs text-red-600 mb-1.5">{imgError}</p>}
+          {imgAiError && <p className="text-xs text-red-600 mb-1.5">{imgAiError}</p>}
           <input
             type="url"
             value={form.cover_image}
