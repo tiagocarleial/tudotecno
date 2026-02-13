@@ -42,6 +42,8 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [slugTouched, setSlugTouched] = useState(isEdit);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [titleLoading, setTitleLoading] = useState(false);
+  const [titleError, setTitleError] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
   const [imgLoading, setImgLoading] = useState(false);
@@ -93,6 +95,33 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function generateTitle() {
+    if (!form.title) {
+      setTitleError('Preencha o título atual antes de gerar um novo.');
+      return;
+    }
+    setTitleError('');
+    setTitleLoading(true);
+    try {
+      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const res = await fetch('/api/ai/generate-title', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: form.title, excerpt: form.excerpt, category: categoryName }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTitleError(data.error || 'Erro ao gerar título');
+        return;
+      }
+      setForm(f => ({ ...f, title: data.title }));
+    } catch (err) {
+      setTitleError(err.message);
+    } finally {
+      setTitleLoading(false);
     }
   }
 
@@ -168,7 +197,25 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Title */}
         <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">Título *</label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-medium)]">Título *</label>
+            <button
+              type="button"
+              onClick={generateTitle}
+              disabled={titleLoading || loading}
+              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+            >
+              {titleLoading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>✦ Gerar título</>
+              )}
+            </button>
+          </div>
+          {titleError && <p className="text-xs text-red-600 mb-1.5">{titleError}</p>}
           <input
             type="text"
             value={form.title}
