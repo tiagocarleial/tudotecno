@@ -44,6 +44,8 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [error, setError] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
+  const [imgLoading, setImgLoading] = useState(false);
+  const [imgError, setImgError] = useState('');
 
   useEffect(() => {
     if (!slugTouched && form.title) {
@@ -123,6 +125,32 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       setAiError(err.message);
     } finally {
       setAiLoading(false);
+    }
+  }
+
+  async function generateCoverImage() {
+    if (!form.source_url) {
+      setImgError('Preencha a URL da fonte antes de gerar a imagem.');
+      return;
+    }
+    setImgError('');
+    setImgLoading(true);
+    try {
+      const res = await fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source_url: form.source_url, title: form.title }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setImgError(data.error || 'Erro ao buscar imagem');
+        return;
+      }
+      setForm(f => ({ ...f, cover_image: data.image_url }));
+    } catch (err) {
+      setImgError(err.message);
+    } finally {
+      setImgLoading(false);
     }
   }
 
@@ -226,7 +254,25 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
 
         {/* Cover image */}
         <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">URL da imagem de capa</label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-medium)]">URL da imagem de capa</label>
+            <button
+              type="button"
+              onClick={generateCoverImage}
+              disabled={imgLoading || loading}
+              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+            >
+              {imgLoading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Buscando...
+                </>
+              ) : (
+                <>✦ Gerar capa da fonte</>
+              )}
+            </button>
+          </div>
+          {imgError && <p className="text-xs text-red-600 mb-1.5">{imgError}</p>}
           <input
             type="url"
             value={form.cover_image}
