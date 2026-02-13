@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 const CATEGORIES = [
@@ -60,6 +60,8 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const [imgError, setImgError] = useState('');
   const [imgAiLoading, setImgAiLoading] = useState(false);
   const [imgAiError, setImgAiError] = useState('');
+  const [imgPreviewLoading, setImgPreviewLoading] = useState(false);
+  const imgRetryRef = useRef(null);
 
   useEffect(() => {
     if (!slugTouched && form.title) {
@@ -215,6 +217,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
         setImgAiError(data.error || 'Erro ao gerar imagem');
         return;
       }
+      setImgPreviewLoading(true);
       setForm(f => ({ ...f, cover_image: data.image_url }));
     } catch (err) {
       setImgAiError(err.message);
@@ -430,8 +433,28 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
             className="w-full px-4 py-2.5 rounded-lg border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm"
           />
           {form.cover_image && (
-            <div className="mt-2 rounded-lg overflow-hidden max-h-40 border border-[var(--border)]">
-              <img src={form.cover_image} alt="Preview" className="w-full h-full object-cover max-h-40" />
+            <div className="mt-2 rounded-lg overflow-hidden max-h-40 border border-[var(--border)] relative">
+              {imgPreviewLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-sm text-gray-500 gap-2">
+                  <span className="inline-block w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                  Gerando imagem com IA...
+                </div>
+              )}
+              <img
+                src={form.cover_image}
+                alt="Preview"
+                className={`w-full h-full object-cover max-h-40 ${imgPreviewLoading ? 'invisible' : ''}`}
+                onLoad={() => {
+                  if (imgRetryRef.current) clearTimeout(imgRetryRef.current);
+                  setImgPreviewLoading(false);
+                }}
+                onError={() => {
+                  if (imgRetryRef.current) clearTimeout(imgRetryRef.current);
+                  imgRetryRef.current = setTimeout(() => {
+                    setForm(f => ({ ...f, cover_image: f.cover_image.includes('?') ? f.cover_image.replace(/&_=\d+/, '') + `&_=${Date.now()}` : f.cover_image }));
+                  }, 4000);
+                }}
+              />
             </div>
           )}
         </div>
