@@ -6,18 +6,22 @@ export async function POST(request) {
     return NextResponse.json({ error: 'GROQ_API_KEY não configurada' }, { status: 500 });
   }
 
-  const { title, category } = await request.json();
+  const { title, content, category } = await request.json();
 
   if (!title) {
     return NextResponse.json({ error: 'Título é obrigatório' }, { status: 400 });
   }
 
+  // Truncate content to avoid token limits
+  const contentSnippet = content ? content.slice(0, 1500) : '';
+
   const prompt = `Você é um editor de um blog de tecnologia brasileiro chamado TudoTecno.
 
-Escreva um resumo curto e atraente para o artigo abaixo. O resumo deve ter no máximo 280 caracteres, ser direto e despertar curiosidade no leitor.
+Leia o artigo abaixo e escreva um resumo fiel ao conteúdo, com no máximo 280 caracteres. O resumo deve refletir o que o artigo realmente fala, ser direto e despertar curiosidade no leitor.
 
 Título: ${title}
 ${category ? `Categoria: ${category}` : ''}
+${contentSnippet ? `\nConteúdo do artigo:\n${contentSnippet}` : ''}
 
 Responda APENAS com o texto do resumo, sem aspas, sem explicações.`;
 

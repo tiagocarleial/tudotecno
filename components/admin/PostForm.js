@@ -139,7 +139,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
       const res = await fetch('/api/ai/generate-excerpt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: form.title, category: categoryName }),
+        body: JSON.stringify({ title: form.title, content: form.content, category: categoryName }),
       });
       const data = await res.json();
       if (!res.ok) {
