@@ -1,12 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export async function POST(request) {
-  if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === 'sua_chave_aqui') {
+  if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json(
-      { error: 'ANTHROPIC_API_KEY não configurada no .env.local' },
+      { error: 'GEMINI_API_KEY não configurada' },
       { status: 500 }
     );
   }
@@ -34,13 +32,12 @@ Instruções:
 - Escreva apenas o corpo do artigo, sem introdução do tipo "Aqui está o artigo:"`;
 
   try {
-    const message = await client.messages.create({
-      model: 'claude-opus-4-5-20251101',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const content = message.content[0]?.text || '';
+    const result = await model.generateContent(prompt);
+    const content = result.response.text();
+
     return NextResponse.json({ content });
   } catch (err) {
     console.error('[AI generate-content]', err);
