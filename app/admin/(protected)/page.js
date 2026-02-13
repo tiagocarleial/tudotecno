@@ -9,11 +9,13 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const published = getPostsCount('published');
-  const drafts    = getPostsCount('draft');
-  const pending   = getSuggestionsCount('pending');
-  const total     = getPostsCount();
-  const recentPosts = getLatestPosts(5);
+  const [published, drafts, pending, total, recentPosts] = await Promise.all([
+    getPostsCount('published'),
+    getPostsCount('draft'),
+    getSuggestionsCount('pending'),
+    getPostsCount(),
+    getLatestPosts(5),
+  ]);
 
   return (
     <div className="p-6 max-w-5xl">
@@ -100,4 +102,3 @@ function StatusBadge({ status }) {
   const s = map[status] || map.draft;
   return <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${s.cls}`}>{s.label}</span>;
 }
-

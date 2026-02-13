@@ -10,7 +10,7 @@ export async function GET(request) {
     const status = searchParams.get('status') || undefined;
     const categoryId = searchParams.get('categoryId') ? parseInt(searchParams.get('categoryId')) : undefined;
 
-    const result = getPosts({ page, limit, status, categoryId });
+    const result = await getPosts({ page, limit, status, categoryId });
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -27,7 +27,7 @@ export async function POST(request) {
     }
 
     const slug = body.slug || slugify(title);
-    const post = createPost({ title, slug, content, excerpt, cover_image, category_id, status, source_url, author, tags });
+    const post = await createPost({ title, slug, content, excerpt, cover_image, category_id, status, source_url, author, tags });
     return NextResponse.json(post, { status: 201 });
   } catch (err) {
     if (err.message?.includes('UNIQUE')) {

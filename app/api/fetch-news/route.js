@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { fetchAllNews } from '@/lib/fetchers/index';
 
-export async function POST() {
+async function handler() {
   try {
     const result = await fetchAllNews();
     return NextResponse.json(result);
@@ -9,3 +9,6 @@ export async function POST() {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const POST = handler;
+export const GET = handler;

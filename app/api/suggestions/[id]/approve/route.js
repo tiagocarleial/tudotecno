@@ -5,14 +5,14 @@ import { slugify } from '@/lib/slugify';
 
 export async function POST(request, { params }) {
   try {
-    const suggestion = getSuggestionById(parseInt(params.id));
+    const suggestion = await getSuggestionById(parseInt(params.id));
     if (!suggestion) return NextResponse.json({ error: 'Sugestão não encontrada' }, { status: 404 });
 
     const body = await request.json().catch(() => ({}));
 
     // "Editar e Aprovar" flow: PostForm already created the post, just mark suggestion approved
     if (body._skip_create) {
-      updateSuggestionStatus(parseInt(params.id), 'approved');
+      await updateSuggestionStatus(parseInt(params.id), 'approved');
       return NextResponse.json({ success: true, suggestion_id: parseInt(params.id) });
     }
 
@@ -28,12 +28,12 @@ export async function POST(request, { params }) {
 
     const slug = body.slug || slugify(title);
 
-    const post = createPost({
+    const post = await createPost({
       title, slug, content, excerpt, cover_image,
       category_id, status, source_url: suggestion.source_url, author, tags,
     });
 
-    updateSuggestionStatus(parseInt(params.id), 'approved');
+    await updateSuggestionStatus(parseInt(params.id), 'approved');
 
     return NextResponse.json({ post, suggestion_id: parseInt(params.id) });
   } catch (err) {

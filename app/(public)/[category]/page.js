@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguranca', 'mercado'];
 
 export async function generateMetadata({ params }) {
-  const category = getCategoryBySlug(params.category);
+  const category = await getCategoryBySlug(params.category);
   if (!category) return { title: 'Categoria não encontrada' };
   return { title: `${category.name} — TudoTecno` };
 }
@@ -17,12 +17,12 @@ export async function generateMetadata({ params }) {
 export default async function CategoryPage({ params, searchParams }) {
   if (!VALID_CATEGORIES.includes(params.category)) notFound();
 
-  const category = getCategoryBySlug(params.category);
+  const category = await getCategoryBySlug(params.category);
   if (!category) notFound();
 
   const page = parseInt(searchParams?.page || '1');
-  const { data: posts, pagination } = getPostsByCategory(params.category, { page, limit: 12 });
-  const sidebarPosts = getLatestPosts(6);
+  const { data: posts, pagination } = await getPostsByCategory(params.category, { page, limit: 12 });
+  const sidebarPosts = await getLatestPosts(6);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">

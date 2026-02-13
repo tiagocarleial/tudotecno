@@ -3,7 +3,7 @@ import { getCategoriesWithPostCount } from '@/lib/categories';
 
 export async function GET() {
   try {
-    const categories = getCategoriesWithPostCount();
+    const categories = await getCategoriesWithPostCount();
     return NextResponse.json(categories);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

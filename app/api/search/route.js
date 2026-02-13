@@ -12,7 +12,7 @@ export async function GET(request) {
       return NextResponse.json({ data: [], pagination: { page, limit, total: 0, totalPages: 0 } });
     }
 
-    const result = searchPosts(q.trim(), { page, limit });
+    const result = await searchPosts(q.trim(), { page, limit });
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

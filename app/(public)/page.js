@@ -6,9 +6,9 @@ import Sidebar from '@/components/public/Sidebar';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const { data: heroPosts } = getPosts({ page: 1, limit: 3, status: 'published' });
-  const { data: latestPosts } = getPosts({ page: 1, limit: 12, status: 'published' });
-  const sidebarPosts = getLatestPosts(6);
+  const { data: heroPosts } = await getPosts({ page: 1, limit: 3, status: 'published' });
+  const { data: latestPosts } = await getPosts({ page: 1, limit: 12, status: 'published' });
+  const sidebarPosts = await getLatestPosts(6);
 
   if (latestPosts.length === 0) {
     return (

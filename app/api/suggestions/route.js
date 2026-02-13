@@ -8,7 +8,7 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const status = searchParams.get('status') || 'pending';
 
-    const result = getSuggestions({ page, limit, status });
+    const result = await getSuggestions({ page, limit, status });
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

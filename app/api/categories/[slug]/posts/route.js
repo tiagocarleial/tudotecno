@@ -8,10 +8,10 @@ export async function GET(request, { params }) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
 
-    const category = getCategoryBySlug(params.slug);
+    const category = await getCategoryBySlug(params.slug);
     if (!category) return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 });
 
-    const result = getPostsByCategory(params.slug, { page, limit });
+    const result = await getPostsByCategory(params.slug, { page, limit });
     return NextResponse.json({ ...result, category });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

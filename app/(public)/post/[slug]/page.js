@@ -9,7 +9,7 @@ import Sidebar from '@/components/public/Sidebar';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }) {
-  const post = getPostBySlug(params.slug);
+  const post = await getPostBySlug(params.slug);
   if (!post) return { title: 'Post não encontrado' };
   return {
     title: `${post.title} — TudoTecno`,
@@ -19,10 +19,10 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function PostPage({ params }) {
-  const post = getPostBySlug(params.slug);
+  const post = await getPostBySlug(params.slug);
   if (!post || post.status !== 'published') notFound();
 
-  const { data: related } = getPostsByCategory(post.category_slug, { page: 1, limit: 4 });
+  const { data: related } = await getPostsByCategory(post.category_slug, { page: 1, limit: 4 });
   const relatedPosts = related.filter(p => p.id !== post.id).slice(0, 3);
   const coverImage = post.cover_image || 'https://placehold.co/800x400/1e293b/94a3b8?text=Sem+imagem';
 
