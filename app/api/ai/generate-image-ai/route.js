@@ -34,7 +34,10 @@ Reply with ONLY the image prompt, no explanations.`,
       max_tokens: 80,
     });
 
-    const imagePrompt = promptCompletion.choices[0]?.message?.content?.trim() || title;
+    const imagePrompt = (promptCompletion.choices[0]?.message?.content?.trim() || title)
+      .replace(/^["']+|["']+$/g, '') // strip surrounding quotes
+      .replace(/["']/g, '')           // strip any remaining quotes
+      .trim();
 
     const encodedPrompt = encodeURIComponent(imagePrompt);
     const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&model=flux&seed=${Date.now()}`;
