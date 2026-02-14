@@ -1,4 +1,5 @@
 import Groq from 'groq-sdk';
+import { InferenceClient } from '@huggingface/inference';
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60;
@@ -18,11 +19,11 @@ export async function POST(request) {
   }
 
   try {
-    const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     const contentSnippet = content ? content.slice(0, 500) : '';
 
     // Generate a clean image prompt in English
-    const promptCompletion = await client.chat.completions.create({
+    const promptCompletion = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{
         role: 'user',
@@ -43,36 +44,18 @@ Reply with ONLY the prompt, no quotes, no explanations.`,
       .replace(/["']/g, '')
       .trim();
 
-    // Call Hugging Face FLUX.1-schnell
-    const hfRes = await fetch(
-      'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.HF_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          inputs: imagePrompt,
-          parameters: { width: 1024, height: 576 },
-        }),
-        signal: AbortSignal.timeout(50000),
-      }
-    );
+    // Generate image via Hugging Face Inference SDK
+    const hf = new InferenceClient(process.env.HF_TOKEN);
 
-    if (!hfRes.ok) {
-      const errText = await hfRes.text();
-      console.error('[HF error]', hfRes.status, errText);
-      return NextResponse.json(
-        { error: `Erro ao gerar imagem (${hfRes.status})` },
-        { status: 500 }
-      );
-    }
+    const imageBlob = await hf.textToImage({
+      model: 'black-forest-labs/FLUX.1-schnell',
+      inputs: imagePrompt,
+      parameters: { width: 1024, height: 576 },
+    });
 
-    const buffer = await hfRes.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString('base64');
-    const contentType = hfRes.headers.get('content-type') || 'image/jpeg';
-    const dataUrl = `data:${contentType};base64,${base64}`;
+    const buffer = Buffer.from(await imageBlob.arrayBuffer());
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:image/jpeg;base64,${base64}`;
 
     return NextResponse.json({ image_url: dataUrl, prompt: imagePrompt });
   } catch (err) {
