@@ -1,0 +1,6 @@
+# ads.txt — Authorized Digital Sellers
+# Atualize com seu Publisher ID do Google AdSense antes de ativar anuncios
+# Formato: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+#
+# Exemplo (substitua pelo seu pub-ID):
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

@@ -6,12 +6,34 @@ import Sidebar from '@/components/public/Sidebar';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguranca', 'mercado'];
+const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguranca', 'mercado', 'noticias'];
+
+const BASE_URL = 'https://tudotecno.vercel.app';
 
 export async function generateMetadata({ params }) {
   const category = await getCategoryBySlug(params.category);
   if (!category) return { title: 'Categoria não encontrada' };
-  return { title: `${category.name} — TudoTecno` };
+
+  const url = `${BASE_URL}/${category.slug}`;
+
+  return {
+    title: category.name,
+    description: `Últimas notícias de ${category.name} — TudoTecno`,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title: `${category.name} — TudoTecno`,
+      description: `Últimas notícias de ${category.name} — TudoTecno`,
+      siteName: 'TudoTecno',
+      locale: 'pt_BR',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${category.name} — TudoTecno`,
+      description: `Últimas notícias de ${category.name} — TudoTecno`,
+    },
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }) {

@@ -8,6 +8,7 @@ import { ptBR } from 'date-fns/locale';
 const CATEGORY_COLORS = {
   'Tecnologia': '#2859f1', 'Games': '#9333ea', 'Ciência': '#16a34a',
   'Internet': '#0891b2', 'Segurança': '#dc2626', 'Mercado': '#d97706',
+  'Notícias': '#e11d48',
 };
 
 function StatusBadge({ status }) {

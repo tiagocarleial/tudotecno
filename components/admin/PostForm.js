@@ -3,14 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-const CATEGORIES = [
-  { id: 1, name: 'Tecnologia' },
-  { id: 2, name: 'Games' },
-  { id: 3, name: 'Ciência' },
-  { id: 4, name: 'Internet' },
-  { id: 5, name: 'Segurança' },
-  { id: 6, name: 'Mercado' },
-];
 
 function cleanExcerpt(text) {
   return (text || '')
@@ -33,6 +25,14 @@ function autoSlug(title) {
 export default function PostForm({ post, suggestionMode = false, onSuccess }) {
   const router = useRouter();
   const isEdit = !!post?.id;
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/categories')
+      .then(r => r.json())
+      .then(data => setCategories(Array.isArray(data) ? data : []));
+  }, []);
 
   const [form, setForm] = useState({
     title:       post?.title       || '',
@@ -120,7 +120,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
     setTitleError('');
     setTitleLoading(true);
     try {
-      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const categoryName = categories.find(c => c.id === parseInt(form.category_id))?.name || '';
       const res = await fetch('/api/ai/generate-title', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -147,7 +147,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
     setExcerptError('');
     setExcerptLoading(true);
     try {
-      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const categoryName = categories.find(c => c.id === parseInt(form.category_id))?.name || '';
       const res = await fetch('/api/ai/generate-excerpt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -174,7 +174,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
     setAiError('');
     setAiLoading(true);
     try {
-      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const categoryName = categories.find(c => c.id === parseInt(form.category_id))?.name || '';
       const res = await fetch('/api/ai/generate-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -206,7 +206,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
     setImgAiError('');
     setImgAiLoading(true);
     try {
-      const categoryName = CATEGORIES.find(c => c.id === parseInt(form.category_id))?.name || '';
+      const categoryName = categories.find(c => c.id === parseInt(form.category_id))?.name || '';
       const res = await fetch('/api/ai/generate-image-ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -315,7 +315,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
             onChange={set('category_id')}
             className="w-full px-4 py-2.5 rounded-lg border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm bg-white"
           >
-            {CATEGORIES.map(cat => (
+            {categories.map(cat => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>

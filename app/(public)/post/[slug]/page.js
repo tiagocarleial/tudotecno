@@ -8,13 +8,37 @@ import Sidebar from '@/components/public/Sidebar';
 
 export const dynamic = 'force-dynamic';
 
+const BASE_URL = 'https://tudotecno.vercel.app';
+
 export async function generateMetadata({ params }) {
   const post = await getPostBySlug(params.slug);
   if (!post) return { title: 'Post não encontrado' };
+
+  const url = `${BASE_URL}/post/${post.slug}`;
+  const image = post.cover_image || `${BASE_URL}/logo.png`;
+
   return {
-    title: `${post.title} — TudoTecno`,
+    title: post.title,
     description: post.excerpt,
-    openGraph: post.cover_image ? { images: [post.cover_image] } : {},
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: post.title,
+      description: post.excerpt,
+      siteName: 'TudoTecno',
+      locale: 'pt_BR',
+      images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+      publishedTime: post.published_at,
+      authors: post.author ? [post.author] : undefined,
+      tags: post.tags?.length ? post.tags : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [image],
+    },
   };
 }
 
@@ -26,6 +50,26 @@ export default async function PostPage({ params }) {
   const relatedPosts = related.filter(p => p.id !== post.id).slice(0, 3);
   const coverImage = post.cover_image || 'https://placehold.co/800x400/1e293b/94a3b8?text=Sem+imagem';
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: post.title,
+    description: post.excerpt,
+    image: [post.cover_image || `${BASE_URL}/logo.png`],
+    datePublished: post.published_at,
+    dateModified: post.published_at,
+    author: [{ '@type': 'Person', name: post.author || 'Redação TudoTecno' }],
+    publisher: {
+      '@type': 'Organization',
+      name: 'TudoTecno',
+      logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${BASE_URL}/post/${post.slug}`,
+    },
+  };
+
   const timeAgo = post.published_at
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
@@ -35,6 +79,10 @@ export default async function PostPage({ params }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Article */}
         <article className="flex-1 min-w-0">
