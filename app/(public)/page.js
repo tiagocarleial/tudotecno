@@ -5,9 +5,10 @@ import Sidebar from '@/components/public/Sidebar';
 
 export const dynamic = 'force-dynamic';
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
+  const page = parseInt(searchParams?.page || '1');
   const { data: heroPosts } = await getPosts({ page: 1, limit: 3, status: 'published' });
-  const { data: latestPosts } = await getPosts({ page: 1, limit: 12, status: 'published' });
+  const { data: latestPosts, pagination } = await getPosts({ page, limit: 12, status: 'published' });
   const sidebarPosts = await getLatestPosts(6);
 
   if (latestPosts.length === 0) {
@@ -24,11 +25,30 @@ export default async function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <HeroSection posts={heroPosts} />
+      {page === 1 && <HeroSection posts={heroPosts} />}
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 min-w-0">
-          <PostGrid posts={latestPosts} title="Últimas notícias" />
+          <PostGrid posts={latestPosts} title="Mais notícias recentes" />
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-8">
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => (
+                <a
+                  key={p}
+                  href={`/?page=${p}`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    p === page
+                      ? 'bg-brand-blue text-white'
+                      : 'bg-white text-[var(--text-medium)] border border-[var(--border)] hover:bg-gray-50'
+                  }`}
+                >
+                  {p}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
         <div className="w-full lg:w-80 shrink-0">
           <Sidebar latestPosts={sidebarPosts} />
