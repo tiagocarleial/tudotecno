@@ -13,15 +13,15 @@ export async function POST(request) {
   }
 
   // Truncate content to avoid token limits
-  const contentSnippet = content ? content.slice(0, 1500) : '';
+  const contentSnippet = content ? content.slice(0, 3000) : '';
 
   const prompt = `Você é um editor de um blog de tecnologia brasileiro chamado TudoTecno.
 
-Leia o artigo abaixo e escreva um resumo com ENTRE 260 E 295 caracteres (obrigatório — conte os caracteres antes de responder).
+Leia o artigo abaixo e escreva um resumo com entre 300 e 1000 caracteres. Ajuste o tamanho conforme a riqueza e complexidade do conteúdo: artigos simples podem ter resumos mais curtos (próximos de 300), enquanto artigos densos ou com muitos detalhes relevantes podem chegar até 1000 caracteres.
 
 Regras obrigatórias:
 - Mencione nomes específicos presentes no artigo (empresas, produtos, marcas, modelos, apps, etc.)
-- Inclua dois ou três detalhes concretos do conteúdo
+- Inclua detalhes concretos e relevantes do conteúdo
 - Seja direto e informativo, como um lead jornalístico
 - NÃO comece com "Saiba como", "Veja como", "Descubra", "Aprenda" — vá direto ao ponto
 - NÃO inclua "O post apareceu primeiro em" nem rodapé de RSS
@@ -38,7 +38,7 @@ Responda APENAS com o texto do resumo, sem aspas, sem explicações.`;
     const completion = await client.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 120,
+      max_tokens: 500,
     });
 
     const excerpt = completion.choices[0]?.message?.content?.trim() || '';

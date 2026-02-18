@@ -158,7 +158,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
         setExcerptError(data.error || 'Erro ao gerar resumo');
         return;
       }
-      setForm(f => ({ ...f, excerpt: cleanExcerpt(data.excerpt).slice(0, 300) }));
+      setForm(f => ({ ...f, excerpt: cleanExcerpt(data.excerpt).slice(0, 1000) }));
     } catch (err) {
       setExcerptError(err.message);
     } finally {
@@ -325,7 +325,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-[var(--text-medium)]">
-              Resumo <span className="text-[var(--text-weak)] font-normal">({form.excerpt.length}/300)</span>
+              Resumo <span className="text-[var(--text-weak)] font-normal">({form.excerpt.length}/1000)</span>
             </label>
             <button
               type="button"
@@ -347,7 +347,7 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
           <textarea
             value={form.excerpt}
             onChange={set('excerpt')}
-            maxLength={300}
+            maxLength={1000}
             rows={2}
             placeholder="Breve descrição do post..."
             className="w-full px-4 py-2.5 rounded-lg border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm resize-none"
