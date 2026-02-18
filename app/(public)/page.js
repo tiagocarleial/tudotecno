@@ -31,11 +31,11 @@ export default async function HomePage({ searchParams }) {
         <div className="flex-1 min-w-0">
           <PostGrid posts={latestPosts} title="Últimas notícias" />
 
-          {/* Botão mais notícias recentes */}
-          {page < pagination.totalPages && (
+          {/* Página 1: botão Mais notícias recentes */}
+          {page === 1 && pagination.totalPages > 1 && (
             <div className="flex justify-center mt-8">
               <a
-                href={`/?page=${page + 1}`}
+                href="/?page=2"
                 className="px-6 py-2.5 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Mais notícias recentes
@@ -43,9 +43,9 @@ export default async function HomePage({ searchParams }) {
             </div>
           )}
 
-          {/* Paginação numérica */}
-          {pagination.totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-4">
+          {/* Página 2+: apenas numeração de páginas */}
+          {page > 1 && pagination.totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-8">
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => (
                 <a
                   key={p}
