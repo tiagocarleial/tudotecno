@@ -29,11 +29,23 @@ export default async function HomePage({ searchParams }) {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 min-w-0">
-          <PostGrid posts={latestPosts} title="Mais notícias recentes" />
+          <PostGrid posts={latestPosts} title="Últimas notícias" />
 
-          {/* Pagination */}
+          {/* Botão mais notícias recentes */}
+          {page < pagination.totalPages && (
+            <div className="flex justify-center mt-8">
+              <a
+                href={`/?page=${page + 1}`}
+                className="px-6 py-2.5 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Mais notícias recentes
+              </a>
+            </div>
+          )}
+
+          {/* Paginação numérica */}
           {pagination.totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-8">
+            <div className="flex justify-center gap-2 mt-4">
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => (
                 <a
                   key={p}
