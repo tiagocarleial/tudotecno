@@ -115,14 +115,6 @@ export default async function PostPage({ params }) {
             <span className="font-semibold text-[var(--text-medium)]">{post.author}</span>
             <span>·</span>
             <time title={dateFormatted}>{timeAgo}</time>
-            {post.source_url && (
-              <>
-                <span>·</span>
-                <a href={post.source_url} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline text-xs">
-                  Fonte original
-                </a>
-              </>
-            )}
           </div>
 
           {/* Content */}
