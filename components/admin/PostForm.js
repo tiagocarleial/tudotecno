@@ -483,18 +483,6 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
           />
         </div>
 
-        {/* Source URL */}
-        <div>
-          <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">URL da fonte (opcional)</label>
-          <input
-            type="url"
-            value={form.source_url}
-            onChange={set('source_url')}
-            placeholder="https://fonte-original.com/artigo"
-            className="w-full px-4 py-2.5 rounded-lg border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm"
-          />
-        </div>
-
         {/* Status */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">Status</label>
