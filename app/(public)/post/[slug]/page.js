@@ -8,7 +8,7 @@ import Sidebar from '@/components/public/Sidebar';
 
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = 'https://tudotecno.vercel.app';
+const BASE_URL = 'https://www.tudotecno.com.br';
 
 export async function generateMetadata({ params }) {
   const post = await getPostBySlug(params.slug);
@@ -70,6 +70,31 @@ export default async function PostPage({ params }) {
     },
   };
 
+  const breadcrumbsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: BASE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: post.category_name,
+        item: `${BASE_URL}/${post.category_slug}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `${BASE_URL}/post/${post.slug}`,
+      },
+    ],
+  };
+
   const timeAgo = post.published_at
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
@@ -82,6 +107,10 @@ export default async function PostPage({ params }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
       />
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Article */}

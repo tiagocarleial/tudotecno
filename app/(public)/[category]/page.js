@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguranca', 'mercado', 'noticias'];
 
-const BASE_URL = 'https://tudotecno.vercel.app';
+const BASE_URL = 'https://www.tudotecno.com.br';
 
 export async function generateMetadata({ params }) {
   const category = await getCategoryBySlug(params.category);
@@ -46,8 +46,32 @@ export default async function CategoryPage({ params, searchParams }) {
   const { data: posts, pagination } = await getPostsByCategory(params.category, { page, limit: 12 });
   const sidebarPosts = await getLatestPosts(6);
 
+  // Breadcrumbs JSON-LD
+  const breadcrumbsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: BASE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category.name,
+        item: `${BASE_URL}/${category.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+      />
       {/* Category header */}
       <div className="flex items-center gap-3 mb-8">
         <div className="w-1.5 h-8 rounded-full" style={{ backgroundColor: category.color }} />

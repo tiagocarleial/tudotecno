@@ -1,7 +1,7 @@
 import { getPosts } from '@/lib/posts';
 import { getAllCategories } from '@/lib/categories';
 
-const BASE_URL = 'https://tudotecno.vercel.app';
+const BASE_URL = 'https://www.tudotecno.com.br';
 
 export default async function sitemap() {
   const staticPages = [

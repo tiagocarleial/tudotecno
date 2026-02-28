@@ -1,4 +1,4 @@
-const BASE_URL = 'https://tudotecno.vercel.app';
+const BASE_URL = 'https://www.tudotecno.com.br';
 
 export default function robots() {
   return {
