@@ -64,7 +64,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <head>
+      <body className="antialiased">
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -81,8 +81,7 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-      </head>
-      <body className="antialiased">
+
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -92,6 +91,7 @@ export default function RootLayout({ children }) {
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
+
         {children}
       </body>
     </html>
