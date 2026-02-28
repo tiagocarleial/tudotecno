@@ -27,9 +27,8 @@ export const metadata = {
   },
   icons: { icon: '/favicon.png' },
   verification: {
-    google: 'GOOGLE_VERIFICATION_CODE_AQUI', // Substitua pelo código do Google Search Console
-    yandex: 'YANDEX_VERIFICATION_CODE_AQUI', // Opcional
-    bing: 'BING_VERIFICATION_CODE_AQUI', // Substitua pelo código do Bing Webmaster
+    google: 'xhxLmwMhYO35qCr1bYLHKKLFwaR3IF3CEYx46v-bcgM',
+    bing: 'E816E0B595A25B9D365E2E5BBDCE60E9',
   },
   openGraph: {
     type: 'website',
