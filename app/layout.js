@@ -74,6 +74,20 @@ export default function RootLayout({ children }) {
           })(window,document,'script','dataLayer','GTM-XXXXXXX');`}
         </Script>
 
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-2RYD18CWCJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-2RYD18CWCJ');
+          `}
+        </Script>
+
         {/* Google AdSense */}
         <Script
           async
