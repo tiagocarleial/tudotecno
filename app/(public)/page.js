@@ -3,7 +3,8 @@ import HeroSection from '@/components/public/HeroSection';
 import PostGrid from '@/components/public/PostGrid';
 import Sidebar from '@/components/public/Sidebar';
 
-export const dynamic = 'force-dynamic';
+// ISR: Revalida a cada 60 segundos
+export const revalidate = 60;
 
 export default async function HomePage({ searchParams }) {
   const page = parseInt(searchParams?.page || '1');

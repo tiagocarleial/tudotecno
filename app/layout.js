@@ -65,8 +65,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body className="antialiased">
-        {/* Google Tag Manager */}
-        <Script id="gtm" strategy="afterInteractive">
+        {/* Google Tag Manager - carrega de forma lazy */}
+        <Script id="gtm" strategy="lazyOnload">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -88,12 +88,13 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
-        {/* Google AdSense */}
+        {/* Google AdSense - carrega depois de tudo para não bloquear renderização
+            Nota: O warning "data-nscript attribute" no console é esperado e não afeta o funcionamento */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8079361631746336"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
 
         {/* Google Tag Manager (noscript) */}
