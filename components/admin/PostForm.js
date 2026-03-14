@@ -483,6 +483,31 @@ export default function PostForm({ post, suggestionMode = false, onSuccess }) {
           />
         </div>
 
+        {/* Source URL */}
+        <div>
+          <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">
+            URL da Fonte
+            <span className="text-xs text-[var(--text-weak)] font-normal ml-1">(não aparece no post público)</span>
+          </label>
+          <input
+            type="url"
+            value={form.source_url}
+            onChange={set('source_url')}
+            placeholder="https://fonte-da-noticia.com/artigo"
+            className="w-full px-4 py-2.5 rounded-lg border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm"
+          />
+          {form.source_url && (
+            <a
+              href={form.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 mt-1.5 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              🔗 Abrir fonte em nova aba
+            </a>
+          )}
+        </div>
+
         {/* Status */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-medium)] mb-1.5">Status</label>
