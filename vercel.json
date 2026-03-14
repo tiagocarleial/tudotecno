@@ -3,6 +3,10 @@
     {
       "path": "/api/fetch-news",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/auto-publish?token=$CRON_SECRET",
+      "schedule": "0 10 * * *"
     }
   ]
 }

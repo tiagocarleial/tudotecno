@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "regenerate-posts": "node scripts/regenerate-posts.js"
+    "regenerate-posts": "node scripts/regenerate-posts.js",
+    "auto-publish": "node scripts/test-auto-publish.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
