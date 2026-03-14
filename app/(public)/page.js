@@ -8,9 +8,16 @@ export const revalidate = 60;
 
 export default async function HomePage({ searchParams }) {
   const page = parseInt(searchParams?.page || '1');
-  const { data: heroPosts } = await getPosts({ page: 1, limit: 3, status: 'published' });
-  const { data: latestPosts, pagination } = await getPosts({ page, limit: 12, status: 'published' });
-  const sidebarPosts = await getLatestPosts(6);
+
+  // Otimização: Uma única query para buscar posts
+  const { data: allPosts, pagination } = await getPosts({ page, limit: 12, status: 'published' });
+
+  // Reutilizar dados: Hero usa os 3 primeiros posts da primeira página
+  const heroPosts = page === 1 ? allPosts.slice(0, 3) : [];
+  const latestPosts = allPosts;
+
+  // Sidebar: reutiliza os primeiros posts ao invés de fazer query separada
+  const sidebarPosts = page === 1 ? allPosts.slice(0, 6) : await getLatestPosts(6);
 
   if (latestPosts.length === 0) {
     return (

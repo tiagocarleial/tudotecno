@@ -118,7 +118,7 @@ export default async function PostPage({ params }) {
         <article className="flex-1 min-w-0">
           {/* Cover */}
           <div className="rounded-xl overflow-hidden aspect-video mb-6">
-            <img src={coverImage} alt={post.title} className="w-full h-full object-cover" />
+            <img src={coverImage} alt={post.title} loading="eager" fetchPriority="high" className="w-full h-full object-cover" />
           </div>
 
           {/* Meta */}

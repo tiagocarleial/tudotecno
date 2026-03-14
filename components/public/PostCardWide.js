@@ -17,6 +17,7 @@ export default function PostCardWide({ post }) {
           <img
             src={coverImage}
             alt={post.title}
+            loading="lazy"
             className="w-full h-full object-cover"
           />
         </div>

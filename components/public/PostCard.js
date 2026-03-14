@@ -17,6 +17,7 @@ export default function PostCard({ post }) {
           <img
             src={coverImage}
             alt={post.title}
+            loading="lazy"
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
