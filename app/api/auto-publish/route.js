@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSuggestions, updateSuggestionStatus } from '@/lib/suggestions';
 import { createPost } from '@/lib/posts';
 import { slugify } from '@/lib/slugify';
@@ -83,6 +84,10 @@ async function processOneSuggestion(suggestion) {
     });
     log.steps.push({ step: 'create_post', status: 'completed', post_id: post.id });
 
+    // Revalidate cache to show new post immediately
+    revalidatePath('/');
+    revalidatePath(`/post/${slug}`);
+
     // Step 6: Mark suggestion as approved
     log.steps.push({ step: 'approve_suggestion', status: 'started' });
     await updateSuggestionStatus(suggestion.id, 'approved');
@@ -149,6 +154,11 @@ export async function POST(request) {
     const failed = results.filter(r => r.status === 'failed').length;
 
     console.log(`[auto-publish] Completed: ${successful} successful, ${failed} failed`);
+
+    // Final revalidation to ensure home page is updated
+    if (successful > 0) {
+      revalidatePath('/');
+    }
 
     return NextResponse.json({
       message: 'Auto-publish process completed',
