@@ -6,8 +6,9 @@ import CategoryBadge from '@/components/public/CategoryBadge';
 import RelatedPosts from '@/components/public/RelatedPosts';
 import Sidebar from '@/components/public/Sidebar';
 
-// ISR: Revalida a cada 60 segundos
-export const revalidate = 60;
+// ISR: Revalida a cada 5 minutos (300 segundos)
+// Reduz chamadas ao banco Turso e melhora performance
+export const revalidate = 300;
 
 const BASE_URL = 'https://www.tudotecno.com.br';
 
