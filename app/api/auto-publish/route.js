@@ -118,7 +118,7 @@ export async function POST(request) {
 
     // Get parameters
     const body = await request.json().catch(() => ({}));
-    const maxPosts = body.maxPosts || 8;
+    const maxPosts = parseInt(searchParams.get('maxPosts') || '') || body.maxPosts || 8;
 
     console.log(`[auto-publish] Starting auto-publish process (max: ${maxPosts} posts)`);
 

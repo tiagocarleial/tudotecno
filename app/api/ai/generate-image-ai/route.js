@@ -1,6 +1,8 @@
 import Groq from 'groq-sdk';
 import { InferenceClient } from '@huggingface/inference';
 import { NextResponse } from 'next/server';
+import fs from 'fs/promises';
+import path from 'path';
 
 export const maxDuration = 60;
 
@@ -54,11 +56,17 @@ Reply with ONLY the image prompt, no quotes, no explanations.`,
       parameters: { width: 1024, height: 576 },
     });
 
+    // Save image to file instead of base64
     const buffer = Buffer.from(await imageBlob.arrayBuffer());
-    const base64 = buffer.toString('base64');
-    const dataUrl = `data:image/jpeg;base64,${base64}`;
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 8);
+    const filename = `cover-${timestamp}-${randomString}.jpg`;
+    const filepath = path.join(process.cwd(), 'public', 'images', 'covers', filename);
 
-    return NextResponse.json({ image_url: dataUrl, prompt: imagePrompt });
+    await fs.writeFile(filepath, buffer);
+    const imageUrl = `/images/covers/${filename}`;
+
+    return NextResponse.json({ image_url: imageUrl, prompt: imagePrompt });
   } catch (err) {
     console.error('[AI generate-image-ai]', err);
     return NextResponse.json({ error: err.message || 'Erro ao gerar imagem' }, { status: 500 });
