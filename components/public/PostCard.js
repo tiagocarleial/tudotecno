@@ -1,25 +1,20 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CategoryBadge from './CategoryBadge';
+import SmartImage from './SmartImage';
 
 export default function PostCard({ post }) {
   const timeAgo = post.published_at
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
 
-  // Trata imagens vazias e base64 (next/image não suporta data URIs)
-  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
-    ? 'https://placehold.co/400x225/1e293b/94a3b8?text=Sem+imagem'
-    : post.cover_image;
-
   return (
     <div className="card-hover bg-white rounded-xl overflow-hidden shadow-sm border border-[var(--border)]">
       <Link href={`/post/${post.slug}`}>
         <div className="relative aspect-video overflow-hidden">
-          <Image
-            src={coverImage}
+          <SmartImage
+            src={post.cover_image}
             alt={post.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

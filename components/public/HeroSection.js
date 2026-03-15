@@ -1,22 +1,18 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CategoryBadge from './CategoryBadge';
+import SmartImage from './SmartImage';
 
 function HeroMainCard({ post }) {
   const timeAgo = post.published_at
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
-  // Trata imagens vazias e base64 (next/image não suporta data URIs)
-  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
-    ? 'https://placehold.co/800x450/0f1117/94a3b8?text=Sem+imagem'
-    : post.cover_image;
 
   return (
     <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group" style={{ minHeight: '360px' }}>
-      <Image
-        src={coverImage}
+      <SmartImage
+        src={post.cover_image}
         alt={post.title}
         fill
         priority
@@ -45,15 +41,11 @@ function HeroSmallCard({ post }) {
   const timeAgo = post.published_at
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
-  // Trata imagens vazias e base64 (next/image não suporta data URIs)
-  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
-    ? 'https://placehold.co/400x200/0f1117/94a3b8?text=Sem+imagem'
-    : post.cover_image;
 
   return (
     <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group flex-1" style={{ minHeight: '170px' }}>
-      <Image
-        src={coverImage}
+      <SmartImage
+        src={post.cover_image}
         alt={post.title}
         fill
         sizes="(max-width: 768px) 50vw, 33vw"

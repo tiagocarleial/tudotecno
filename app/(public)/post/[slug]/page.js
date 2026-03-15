@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getPostBySlug, getPostsByCategory } from '@/lib/posts';
 import CategoryBadge from '@/components/public/CategoryBadge';
 import RelatedPosts from '@/components/public/RelatedPosts';
 import Sidebar from '@/components/public/Sidebar';
+import SmartImage from '@/components/public/SmartImage';
 
 // ISR: Revalida a cada 5 minutos (300 segundos)
 // Reduz chamadas ao banco Turso e melhora performance
@@ -51,11 +51,6 @@ export default async function PostPage({ params }) {
 
   const { data: related } = await getPostsByCategory(post.category_slug, { page: 1, limit: 4 });
   const relatedPosts = related.filter(p => p.id !== post.id).slice(0, 3);
-
-  // Trata imagens vazias e base64 (next/image não suporta data URIs)
-  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
-    ? 'https://placehold.co/800x400/1e293b/94a3b8?text=Sem+imagem'
-    : post.cover_image;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -124,7 +119,7 @@ export default async function PostPage({ params }) {
         <article className="flex-1 min-w-0">
           {/* Cover */}
           <div className="relative rounded-xl overflow-hidden aspect-video mb-6">
-            <Image src={coverImage} alt={post.title} fill priority sizes="(max-width: 1200px) 100vw, 800px" className="object-cover" />
+            <SmartImage src={post.cover_image} alt={post.title} fill priority sizes="(max-width: 1200px) 100vw, 800px" className="object-cover" />
           </div>
 
           {/* Meta */}

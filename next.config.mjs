@@ -16,6 +16,14 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.imgur.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com',
+      },
+      {
+        protocol: 'https',
         hostname: '**.amazonaws.com',
       },
       {
@@ -63,6 +71,8 @@ const nextConfig = {
         hostname: '**.ibxk.com.br',
       },
     ],
+    // Permitir dados URI para imagens base64
+    unoptimized: false,
   },
 
   // Headers de segurança e performance
