@@ -24,9 +24,12 @@ export default function SmartImage({ src, alt, fill, priority, sizes, className,
         alt={alt}
         className={className}
         style={{
+          position: fill ? 'absolute' : 'relative',
           width: '100%',
           height: '100%',
+          inset: fill ? '0px' : 'auto',
           objectFit: 'cover',
+          objectPosition: 'center',
           ...style,
         }}
       />

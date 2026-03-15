@@ -10,7 +10,7 @@ function HeroMainCard({ post }) {
     : '';
 
   return (
-    <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group" style={{ minHeight: '280px' }}>
+    <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group" style={{ height: '280px' }}>
       <SmartImage
         src={post.cover_image}
         alt={post.title}
@@ -43,7 +43,7 @@ function HeroSmallCard({ post }) {
     : '';
 
   return (
-    <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group flex-1" style={{ minHeight: '133px' }}>
+    <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group flex-1" style={{ height: '133px' }}>
       <SmartImage
         src={post.cover_image}
         alt={post.title}
@@ -70,12 +70,12 @@ export default function HeroSection({ posts }) {
 
   return (
     <section className="mb-10">
-      <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: '280px' }}>
-        <div className="flex-1 lg:flex-[2]">
+      <div className="flex flex-col lg:flex-row gap-4" style={{ height: '280px' }}>
+        <div className="flex-1 lg:flex-[2] h-full">
           <HeroMainCard post={main} />
         </div>
         {rest.length > 0 && (
-          <div className="flex flex-row lg:flex-col gap-4 lg:flex-1">
+          <div className="flex flex-row lg:flex-col gap-4 lg:flex-1 h-full">
             {rest.slice(0, 2).map(post => (
               <HeroSmallCard key={post.id} post={post} />
             ))}
