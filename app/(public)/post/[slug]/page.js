@@ -51,7 +51,11 @@ export default async function PostPage({ params }) {
 
   const { data: related } = await getPostsByCategory(post.category_slug, { page: 1, limit: 4 });
   const relatedPosts = related.filter(p => p.id !== post.id).slice(0, 3);
-  const coverImage = post.cover_image || 'https://placehold.co/800x400/1e293b/94a3b8?text=Sem+imagem';
+
+  // Trata imagens vazias e base64 (next/image não suporta data URIs)
+  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
+    ? 'https://placehold.co/800x400/1e293b/94a3b8?text=Sem+imagem'
+    : post.cover_image;
 
   const jsonLd = {
     '@context': 'https://schema.org',

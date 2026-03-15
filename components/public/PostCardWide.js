@@ -9,7 +9,10 @@ export default function PostCardWide({ post }) {
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
 
-  const coverImage = post.cover_image || 'https://placehold.co/120x90/1e293b/94a3b8?text=...';
+  // Trata imagens vazias e base64 (next/image não suporta data URIs)
+  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
+    ? 'https://placehold.co/120x90/1e293b/94a3b8?text=...'
+    : post.cover_image;
 
   return (
     <div className="flex gap-3 py-3 border-b border-[var(--border)] last:border-0">

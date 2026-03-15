@@ -9,7 +9,10 @@ export default function PostCard({ post }) {
     ? formatDistanceToNow(new Date(post.published_at), { addSuffix: true, locale: ptBR })
     : '';
 
-  const coverImage = post.cover_image || 'https://placehold.co/400x225/1e293b/94a3b8?text=Sem+imagem';
+  // Trata imagens vazias e base64 (next/image não suporta data URIs)
+  const coverImage = !post.cover_image || post.cover_image.startsWith('data:')
+    ? 'https://placehold.co/400x225/1e293b/94a3b8?text=Sem+imagem'
+    : post.cover_image;
 
   return (
     <div className="card-hover bg-white rounded-xl overflow-hidden shadow-sm border border-[var(--border)]">
