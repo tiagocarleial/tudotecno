@@ -7,15 +7,15 @@ export default function HomeLoading() {
     <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
       {/* Hero skeleton */}
       <section className="mb-10">
-        <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: '360px' }}>
+        <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: '280px' }}>
           {/* Main hero */}
           <div className="flex-1 lg:flex-[2]">
-            <div className="rounded-xl overflow-hidden bg-gray-200 h-full min-h-[360px]" />
+            <div className="rounded-xl overflow-hidden bg-gray-200 h-full min-h-[280px]" />
           </div>
           {/* Side heroes */}
           <div className="flex flex-row lg:flex-col gap-4 lg:flex-1">
-            <div className="flex-1 rounded-xl overflow-hidden bg-gray-200 min-h-[170px]" />
-            <div className="flex-1 rounded-xl overflow-hidden bg-gray-200 min-h-[170px]" />
+            <div className="flex-1 rounded-xl overflow-hidden bg-gray-200 min-h-[133px]" />
+            <div className="flex-1 rounded-xl overflow-hidden bg-gray-200 min-h-[133px]" />
           </div>
         </div>
       </section>
