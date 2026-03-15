@@ -1,10 +1,13 @@
 import Script from 'next/script';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
+import NavigationProgress from '@/components/NavigationProgress';
 
 export default function PublicLayout({ children }) {
   return (
     <>
+      <NavigationProgress />
+
       {/* Google Analytics - Carrega de forma lazy para não bloquear */}
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-2RYD18CWCJ"
