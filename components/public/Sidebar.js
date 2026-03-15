@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import PostCardWide from './PostCardWide';
 
 const CATEGORIES = [
@@ -35,7 +36,7 @@ export default function Sidebar({ latestPosts = [] }) {
         </h3>
         <div className="space-y-2">
           {CATEGORIES.map(cat => (
-            <a
+            <Link
               key={cat.slug}
               href={`/${cat.slug}`}
               className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors group"
@@ -44,7 +45,7 @@ export default function Sidebar({ latestPosts = [] }) {
               <span className="text-sm font-medium text-[var(--text-medium)] group-hover:text-[var(--text-strong)] transition-colors">
                 {cat.name}
               </span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
