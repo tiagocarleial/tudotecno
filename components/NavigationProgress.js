@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 /**
  * Barra de progresso global que aparece durante navegação entre páginas
@@ -9,7 +9,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
  */
 export default function NavigationProgress() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -36,7 +35,7 @@ export default function NavigationProgress() {
       clearInterval(progressInterval);
       clearTimeout(timer);
     };
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   if (!loading) return null;
 
