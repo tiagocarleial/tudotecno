@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "regenerate-posts": "node scripts/regenerate-posts.js",
-    "auto-publish": "node scripts/test-auto-publish.js"
+    "auto-publish": "node scripts/test-auto-publish.js",
+    "optimize-db": "node scripts/optimize-database.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

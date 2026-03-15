@@ -1,4 +1,4 @@
-import { getPosts } from '@/lib/posts';
+import { getAllPostsForSitemap } from '@/lib/posts';
 import { getAllCategories } from '@/lib/categories';
 
 const BASE_URL = 'https://www.tudotecno.com.br';
@@ -27,7 +27,8 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  const { data: posts } = await getPosts({ page: 1, limit: 5000, status: 'published' });
+  // Usa função sem cache otimizada para sitemap
+  const posts = await getAllPostsForSitemap();
   const postPages = posts.map((post) => ({
     url: `${BASE_URL}/post/${post.slug}`,
     lastModified: post.published_at ? new Date(post.published_at) : new Date(),

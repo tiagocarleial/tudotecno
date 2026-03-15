@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CategoryBadge from './CategoryBadge';
@@ -11,12 +12,13 @@ function HeroMainCard({ post }) {
 
   return (
     <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group" style={{ minHeight: '360px' }}>
-      <img
+      <Image
         src={coverImage}
         alt={post.title}
-        loading="eager"
-        fetchPriority="high"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        fill
+        priority
+        sizes="(max-width: 768px) 100vw, 66vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -44,11 +46,12 @@ function HeroSmallCard({ post }) {
 
   return (
     <Link href={`/post/${post.slug}`} className="block relative rounded-xl overflow-hidden group flex-1" style={{ minHeight: '170px' }}>
-      <img
+      <Image
         src={coverImage}
         alt={post.title}
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        fill
+        sizes="(max-width: 768px) 50vw, 33vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-4">

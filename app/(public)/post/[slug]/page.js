@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getPostBySlug, getPostsByCategory } from '@/lib/posts';
@@ -118,8 +119,8 @@ export default async function PostPage({ params }) {
         {/* Article */}
         <article className="flex-1 min-w-0">
           {/* Cover */}
-          <div className="rounded-xl overflow-hidden aspect-video mb-6">
-            <img src={coverImage} alt={post.title} loading="eager" fetchPriority="high" className="w-full h-full object-cover" />
+          <div className="relative rounded-xl overflow-hidden aspect-video mb-6">
+            <Image src={coverImage} alt={post.title} fill priority sizes="(max-width: 1200px) 100vw, 800px" className="object-cover" />
           </div>
 
           {/* Meta */}

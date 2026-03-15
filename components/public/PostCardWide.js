@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CategoryBadge from './CategoryBadge';
@@ -13,12 +14,13 @@ export default function PostCardWide({ post }) {
   return (
     <div className="flex gap-3 py-3 border-b border-[var(--border)] last:border-0">
       <Link href={`/post/${post.slug}`} className="shrink-0">
-        <div className="w-24 h-16 rounded-lg overflow-hidden">
-          <img
+        <div className="relative w-24 h-16 rounded-lg overflow-hidden">
+          <Image
             src={coverImage}
             alt={post.title}
-            loading="lazy"
-            className="w-full h-full object-cover"
+            fill
+            sizes="96px"
+            className="object-cover"
           />
         </div>
       </Link>

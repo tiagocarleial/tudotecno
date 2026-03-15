@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CategoryBadge from './CategoryBadge';
@@ -14,11 +15,12 @@ export default function PostCard({ post }) {
     <div className="card-hover bg-white rounded-xl overflow-hidden shadow-sm border border-[var(--border)]">
       <Link href={`/post/${post.slug}`}>
         <div className="relative aspect-video overflow-hidden">
-          <img
+          <Image
             src={coverImage}
             alt={post.title}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
       </Link>

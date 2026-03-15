@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import SearchBar from './SearchBar';
 
 const CATEGORIES = [
@@ -23,7 +24,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center">
         {/* Logo */}
         <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1">
-          <img src="/logo.png" alt="TudoTecno" className="h-7 w-auto" />
+          <Image src="/logo.png" alt="TudoTecno" width={120} height={28} priority className="h-7 w-auto" />
         </Link>
 
         {/* Desktop nav links — centralizadas */}
