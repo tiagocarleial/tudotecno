@@ -61,19 +61,36 @@ Reply with ONLY the image prompt, no quotes, no explanations.`,
 
       return NextResponse.json({ image_url: base64Image, prompt: imagePrompt });
     } catch (hfError) {
-      // Fallback: Use Unsplash placeholder if HF fails (e.g., out of credits)
-      console.warn('[AI generate-image-ai] Hugging Face failed, using placeholder:', hfError.message);
+      // Fallback: Use Unsplash API if HF fails (e.g., out of credits)
+      console.warn('[AI generate-image-ai] Hugging Face failed, using Unsplash fallback:', hfError.message);
 
-      // Use Unsplash with tech-related search terms
-      const searchTerm = category || 'technology';
-      const placeholderUrl = `https://source.unsplash.com/1024x576/?${encodeURIComponent(searchTerm)},tech`;
+      if (!process.env.UNSPLASH_ACCESS_KEY) {
+        return NextResponse.json({ error: 'Fallback image service not configured' }, { status: 500 });
+      }
 
-      return NextResponse.json({
-        image_url: placeholderUrl,
-        prompt: imagePrompt,
-        fallback: true,
-        fallback_reason: 'HF credits depleted'
-      });
+      try {
+        // Use Unsplash API with tech-related search terms
+        const searchTerm = category || 'technology';
+        const unsplashUrl = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=landscape&client_id=${process.env.UNSPLASH_ACCESS_KEY}`;
+
+        const unsplashResponse = await fetch(unsplashUrl);
+        if (!unsplashResponse.ok) {
+          throw new Error(`Unsplash API failed: ${unsplashResponse.status}`);
+        }
+
+        const unsplashData = await unsplashResponse.json();
+        const imageUrl = unsplashData.urls.regular; // 1080px width, good for blog covers
+
+        return NextResponse.json({
+          image_url: imageUrl,
+          prompt: imagePrompt,
+          fallback: true,
+          fallback_reason: 'HF credits depleted'
+        });
+      } catch (unsplashError) {
+        console.error('[AI generate-image-ai] Unsplash fallback failed:', unsplashError.message);
+        return NextResponse.json({ error: 'Failed to generate or fetch image' }, { status: 500 });
+      }
     }
   } catch (err) {
     console.error('[AI generate-image-ai]', err);
