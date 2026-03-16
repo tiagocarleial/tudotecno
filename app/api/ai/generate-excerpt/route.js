@@ -1,5 +1,5 @@
-import Groq from 'groq-sdk';
 import { NextResponse } from 'next/server';
+import { callLLMWithFallback } from '@/lib/ai-fallback';
 
 export async function POST(request) {
   if (!process.env.GROQ_API_KEY) {
@@ -33,15 +33,7 @@ ${contentSnippet ? `\nConteúdo do artigo:\n${contentSnippet}` : ''}
 Responda APENAS com o texto do resumo, sem aspas, sem explicações.`;
 
   try {
-    const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-    const completion = await client.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
-    });
-
-    const excerpt = completion.choices[0]?.message?.content?.trim() || '';
+    const excerpt = await callLLMWithFallback(prompt, { max_tokens: 500 });
     return NextResponse.json({ excerpt });
   } catch (err) {
     console.error('[AI generate-excerpt]', err);

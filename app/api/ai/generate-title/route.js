@@ -1,5 +1,5 @@
-import Groq from 'groq-sdk';
 import { NextResponse } from 'next/server';
+import { callLLMWithFallback } from '@/lib/ai-fallback';
 
 export async function POST(request) {
   if (!process.env.GROQ_API_KEY) {
@@ -23,15 +23,7 @@ ${category ? `Categoria: ${category}` : ''}
 Responda APENAS com o novo título, sem aspas, sem explicações, sem pontuação final.`;
 
   try {
-    const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-    const completion = await client.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 100,
-    });
-
-    const newTitle = completion.choices[0]?.message?.content?.trim() || '';
+    const newTitle = await callLLMWithFallback(prompt, { max_tokens: 100 });
     return NextResponse.json({ title: newTitle });
   } catch (err) {
     console.error('[AI generate-title]', err);

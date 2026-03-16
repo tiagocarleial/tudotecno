@@ -1,5 +1,5 @@
-import Groq from 'groq-sdk';
 import { NextResponse } from 'next/server';
+import { callLLMWithFallback } from '@/lib/ai-fallback';
 
 export async function POST(request) {
   if (!process.env.GROQ_API_KEY) {
@@ -50,15 +50,7 @@ Regras de formatação:
 Lembre-se: O artigo DEVE ter no mínimo 800 palavras para atender aos padrões de qualidade do site.`;
 
   try {
-    const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-    const completion = await client.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 3000,
-    });
-
-    const content = completion.choices[0]?.message?.content || '';
+    const content = await callLLMWithFallback(prompt, { max_tokens: 3000 });
     return NextResponse.json({ content });
   } catch (err) {
     console.error('[AI generate-content]', err);

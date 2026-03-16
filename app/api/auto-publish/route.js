@@ -108,13 +108,21 @@ async function processOneSuggestion(suggestion) {
 
 export async function POST(request) {
   try {
-    // Check for secret token to prevent unauthorized access
+    // Check for secret token (both query param and CRON_SECRET header)
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
+    const authHeader = request.headers.get('authorization');
 
-    if (token !== process.env.CRON_SECRET) {
+    // Accept either query param token or CRON_SECRET from Vercel cron jobs
+    const isValidToken = token === process.env.CRON_SECRET;
+    const isValidCronSecret = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+
+    if (!isValidToken && !isValidCronSecret) {
+      console.error('[auto-publish] Authentication failed');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    console.log('[auto-publish] Authentication successful');
 
     // Get parameters
     const body = await request.json().catch(() => ({}));
