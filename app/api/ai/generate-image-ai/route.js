@@ -1,8 +1,6 @@
 import Groq from 'groq-sdk';
 import { InferenceClient } from '@huggingface/inference';
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 
 export const maxDuration = 60;
 
@@ -47,26 +45,36 @@ Reply with ONLY the image prompt, no quotes, no explanations.`,
       .replace(/["']/g, '')
       .trim();
 
-    // Generate image via Hugging Face Inference SDK
-    const hf = new InferenceClient(process.env.HF_TOKEN);
+    try {
+      // Generate image via Hugging Face Inference SDK
+      const hf = new InferenceClient(process.env.HF_TOKEN);
 
-    const imageBlob = await hf.textToImage({
-      model: 'black-forest-labs/FLUX.1-schnell',
-      inputs: imagePrompt,
-      parameters: { width: 1024, height: 576 },
-    });
+      const imageBlob = await hf.textToImage({
+        model: 'black-forest-labs/FLUX.1-schnell',
+        inputs: imagePrompt,
+        parameters: { width: 1024, height: 576 },
+      });
 
-    // Save image to file instead of base64
-    const buffer = Buffer.from(await imageBlob.arrayBuffer());
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 8);
-    const filename = `cover-${timestamp}-${randomString}.jpg`;
-    const filepath = path.join(process.cwd(), 'public', 'images', 'covers', filename);
+      // Convert to base64 (works in Vercel read-only filesystem)
+      const buffer = Buffer.from(await imageBlob.arrayBuffer());
+      const base64Image = `data:image/jpeg;base64,${buffer.toString('base64')}`;
 
-    await fs.writeFile(filepath, buffer);
-    const imageUrl = `/images/covers/${filename}`;
+      return NextResponse.json({ image_url: base64Image, prompt: imagePrompt });
+    } catch (hfError) {
+      // Fallback: Use Unsplash placeholder if HF fails (e.g., out of credits)
+      console.warn('[AI generate-image-ai] Hugging Face failed, using placeholder:', hfError.message);
 
-    return NextResponse.json({ image_url: imageUrl, prompt: imagePrompt });
+      // Use Unsplash with tech-related search terms
+      const searchTerm = category || 'technology';
+      const placeholderUrl = `https://source.unsplash.com/1024x576/?${encodeURIComponent(searchTerm)},tech`;
+
+      return NextResponse.json({
+        image_url: placeholderUrl,
+        prompt: imagePrompt,
+        fallback: true,
+        fallback_reason: 'HF credits depleted'
+      });
+    }
   } catch (err) {
     console.error('[AI generate-image-ai]', err);
     return NextResponse.json({ error: err.message || 'Erro ao gerar imagem' }, { status: 500 });
