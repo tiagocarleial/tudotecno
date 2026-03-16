@@ -1,6 +1,6 @@
-import Groq from 'groq-sdk';
 import { InferenceClient } from '@huggingface/inference';
 import { NextResponse } from 'next/server';
+import { callLLMWithFallback } from '@/lib/ai-fallback';
 
 export const maxDuration = 60;
 
@@ -19,15 +19,10 @@ export async function POST(request) {
   }
 
   try {
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     const contentSnippet = content ? content.slice(0, 2000) : '';
 
-    // Generate a clean image prompt in English
-    const promptCompletion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{
-        role: 'user',
-        content: `Read the tech blog article below and create a short image generation prompt in English (max 100 characters, no quotes) for its cover photo.
+    // Generate a clean image prompt in English using fallback system
+    const prompt = `Read the tech blog article below and create a short image generation prompt in English (max 100 characters, no quotes) for its cover photo.
 Focus on the main subject and themes of the article content, not just the title.
 Photorealistic, modern, high quality, suitable as a blog header. No text or logos in the image.
 
@@ -35,12 +30,11 @@ Article title: ${title}
 ${category ? `Category: ${category}` : ''}
 ${contentSnippet ? `Article content:\n${contentSnippet}` : ''}
 
-Reply with ONLY the image prompt, no quotes, no explanations.`,
-      }],
-      max_tokens: 80,
-    });
+Reply with ONLY the image prompt, no quotes, no explanations.`;
 
-    const imagePrompt = (promptCompletion.choices[0]?.message?.content?.trim() || title)
+    const imagePromptRaw = await callLLMWithFallback(prompt, { max_tokens: 80 });
+
+    const imagePrompt = (imagePromptRaw || title)
       .replace(/^["']+|["']+$/g, '')
       .replace(/["']/g, '')
       .trim();
