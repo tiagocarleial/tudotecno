@@ -3,6 +3,10 @@ import HeroSection from '@/components/public/HeroSection';
 import PostGrid from '@/components/public/PostGrid';
 import Sidebar from '@/components/public/Sidebar';
 
+// Force dynamic: não gera página estática no build
+// Evita timeout e out of memory no Turso durante build
+export const dynamic = 'force-dynamic';
+
 // ISR: Revalida a cada 5 minutos (300 segundos)
 // Reduz chamadas ao banco Turso e melhora performance
 export const revalidate = 300;
