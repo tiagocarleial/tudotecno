@@ -37,3 +37,7 @@ next-env.d.ts
 
 # generated images
 /public/images/covers/
+
+# sqlite temporary files
+*.sqlite-shm
+*.sqlite-wal
