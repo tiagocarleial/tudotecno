@@ -7,12 +7,12 @@ import RelatedPosts from '@/components/public/RelatedPosts';
 import Sidebar from '@/components/public/Sidebar';
 import SmartImage from '@/components/public/SmartImage';
 
-// Force dynamic: não gera página estática no build
-export const dynamic = 'force-dynamic';
-
 // ISR: Revalida a cada 5 minutos (300 segundos)
 // Reduz chamadas ao banco Turso e melhora performance
 export const revalidate = 300;
+
+// Durante build: permite fallback se Turso falhar
+export const dynamicParams = true;
 
 const BASE_URL = 'https://www.tudotecno.com.br';
 

@@ -4,11 +4,11 @@ import { getPostsByCategory, getLatestPosts } from '@/lib/posts';
 import PostGrid from '@/components/public/PostGrid';
 import Sidebar from '@/components/public/Sidebar';
 
-// Force dynamic: não gera página estática no build
-export const dynamic = 'force-dynamic';
-
 // ISR: Revalida a cada 60 segundos
 export const revalidate = 60;
+
+// Durante build: permite fallback se Turso falhar
+export const dynamicParams = true;
 
 const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguranca', 'mercado', 'noticias'];
 
