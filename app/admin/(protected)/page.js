@@ -16,13 +16,19 @@ export default async function AdminDashboard() {
   let recentPosts = [];
 
   try {
-    [published, drafts, pending, total, recentPosts] = await Promise.all([
-      getPostsCount('published').catch(() => 0),
-      getPostsCount('draft').catch(() => 0),
-      getSuggestionsCount('pending').catch(() => 0),
-      getPostsCount().catch(() => 0),
-      getLatestPosts(5).catch(() => []),
+    const results = await Promise.allSettled([
+      getPostsCount('published'),
+      getPostsCount('draft'),
+      getSuggestionsCount('pending'),
+      getPostsCount(),
+      getLatestPosts(5),
     ]);
+
+    published = results[0].status === 'fulfilled' ? results[0].value : 0;
+    drafts = results[1].status === 'fulfilled' ? results[1].value : 0;
+    pending = results[2].status === 'fulfilled' ? results[2].value : 0;
+    total = results[3].status === 'fulfilled' ? results[3].value : 0;
+    recentPosts = results[4].status === 'fulfilled' ? results[4].value : [];
   } catch (error) {
     console.error('[admin] Error loading dashboard data:', error.message);
     // Continua com valores padrão (0 e arrays vazios)
