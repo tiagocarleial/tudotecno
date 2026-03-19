@@ -14,8 +14,8 @@ function verifySession(cookieValue) {
 
 export const metadata = { title: 'Admin — TudoTecno' };
 
-export default function ProtectedLayout({ children }) {
-  const cookieStore = cookies();
+export default async function ProtectedLayout({ children }) {
+  const cookieStore = await cookies();
   const session = cookieStore.get('admin_session')?.value;
 
   if (!verifySession(session)) {
