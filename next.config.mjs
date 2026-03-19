@@ -4,6 +4,14 @@ const nextConfig = {
   compress: true, // Compressão gzip
   poweredByHeader: false, // Remove header X-Powered-By
 
+  // Otimizações adicionais
+  reactStrictMode: true,
+
+  // Otimizações de build
+  experimental: {
+    optimizePackageImports: ['date-fns', '@libsql/client'],
+  },
+
   // Otimização de imagens
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -97,9 +105,25 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
           },
+        ],
+      },
+      // Cache agressivo para assets estáticos
+      {
+        source: '/(.*)\\.(ico|png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|eot|otf)',
+        headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=300, stale-while-revalidate=600'
+            value: 'public, max-age=31536000, immutable'
+          },
+        ],
+      },
+      // Cache intermediário para páginas
+      {
+        source: '/((?!api).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=600, stale-while-revalidate=86400'
           },
         ],
       },
