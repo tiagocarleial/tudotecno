@@ -3,7 +3,8 @@ import { getPostBySlug } from '@/lib/posts';
 
 export async function GET(request, { params }) {
   try {
-    const post = await getPostBySlug(params.slug);
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
     if (!post || post.status !== 'published') {
       return NextResponse.json({ error: 'Post não encontrado' }, { status: 404 });
     }

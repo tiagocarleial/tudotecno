@@ -17,7 +17,8 @@ export const dynamicParams = true;
 const BASE_URL = 'https://www.tudotecno.com.br';
 
 export async function generateMetadata({ params }) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) return { title: 'Post não encontrado' };
 
   const url = `${BASE_URL}/post/${post.slug}`;
@@ -49,7 +50,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function PostPage({ params }) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post || post.status !== 'published') notFound();
 
   const { data: related } = await getPostsByCategory(post.category_slug, { page: 1, limit: 4 });

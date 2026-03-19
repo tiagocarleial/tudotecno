@@ -15,7 +15,8 @@ const VALID_CATEGORIES = ['tecnologia', 'games', 'ciencia', 'internet', 'seguran
 const BASE_URL = 'https://www.tudotecno.com.br';
 
 export async function generateMetadata({ params }) {
-  const category = await getCategoryBySlug(params.category);
+  const { category: categorySlug } = await params;
+  const category = await getCategoryBySlug(categorySlug);
   if (!category) return { title: 'Categoria não encontrada' };
 
   const url = `${BASE_URL}/${category.slug}`;
@@ -41,13 +42,14 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function CategoryPage({ params, searchParams }) {
-  if (!VALID_CATEGORIES.includes(params.category)) notFound();
+  const { category: categorySlug } = await params;
+  if (!VALID_CATEGORIES.includes(categorySlug)) notFound();
 
-  const category = await getCategoryBySlug(params.category);
+  const category = await getCategoryBySlug(categorySlug);
   if (!category) notFound();
 
   const page = parseInt(searchParams?.page || '1');
-  const { data: posts, pagination } = await getPostsByCategory(params.category, { page, limit: 12 });
+  const { data: posts, pagination } = await getPostsByCategory(categorySlug, { page, limit: 12 });
   const sidebarPosts = await getLatestPosts(6);
 
   // Breadcrumbs JSON-LD
@@ -100,7 +102,7 @@ export default async function CategoryPage({ params, searchParams }) {
                   {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => (
                     <a
                       key={p}
-                      href={`/${params.category}?page=${p}`}
+                      href={`/${categorySlug}?page=${p}`}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                         p === page
                           ? 'text-white'
