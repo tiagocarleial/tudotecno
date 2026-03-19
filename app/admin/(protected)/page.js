@@ -9,13 +9,24 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const [published, drafts, pending, total, recentPosts] = await Promise.all([
-    getPostsCount('published'),
-    getPostsCount('draft'),
-    getSuggestionsCount('pending'),
-    getPostsCount(),
-    getLatestPosts(5),
-  ]);
+  let published = 0;
+  let drafts = 0;
+  let pending = 0;
+  let total = 0;
+  let recentPosts = [];
+
+  try {
+    [published, drafts, pending, total, recentPosts] = await Promise.all([
+      getPostsCount('published').catch(() => 0),
+      getPostsCount('draft').catch(() => 0),
+      getSuggestionsCount('pending').catch(() => 0),
+      getPostsCount().catch(() => 0),
+      getLatestPosts(5).catch(() => []),
+    ]);
+  } catch (error) {
+    console.error('[admin] Error loading dashboard data:', error.message);
+    // Continua com valores padrão (0 e arrays vazios)
+  }
 
   return (
     <div className="p-6 max-w-5xl">
