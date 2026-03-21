@@ -48,7 +48,8 @@ export default async function CategoryPage({ params, searchParams }) {
   const category = await getCategoryBySlug(categorySlug);
   if (!category) notFound();
 
-  const page = parseInt(searchParams?.page || '1');
+  const searchParamsResolved = await searchParams;
+  const page = parseInt(searchParamsResolved?.page || '1');
   const { data: posts, pagination } = await getPostsByCategory(categorySlug, { page, limit: 12 });
   const sidebarPosts = await getLatestPosts(6);
 

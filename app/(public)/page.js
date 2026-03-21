@@ -12,7 +12,8 @@ export const revalidate = 300;
 export const dynamicParams = true;
 
 export default async function HomePage({ searchParams }) {
-  const page = parseInt(searchParams?.page || '1');
+  const params = await searchParams;
+  const page = parseInt(params?.page || '1');
 
   // Otimização: Uma única query para buscar posts
   const { data: allPosts, pagination } = await getPosts({ page, limit: 12, status: 'published' });
