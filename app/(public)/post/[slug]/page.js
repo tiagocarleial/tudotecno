@@ -6,6 +6,8 @@ import CategoryBadge from '@/components/public/CategoryBadge';
 import RelatedPosts from '@/components/public/RelatedPosts';
 import Sidebar from '@/components/public/Sidebar';
 import SmartImage from '@/components/public/SmartImage';
+import AdInArticle from '@/components/ads/AdInArticle';
+import AdBanner from '@/components/ads/AdBanner';
 
 // ISR: Revalida a cada 5 minutos (300 segundos)
 // Reduz chamadas ao banco Turso e melhora performance
@@ -153,6 +155,9 @@ export default async function PostPage({ params }) {
             <time title={dateFormatted}>{timeAgo}</time>
           </div>
 
+          {/* Ad Unit 1 - After Meta */}
+          <AdBanner adSlot="1122334455" className="mb-8" />
+
           {/* Content */}
           <div
             className="prose prose-gray max-w-none text-[var(--text-medium)] leading-relaxed"
@@ -161,7 +166,13 @@ export default async function PostPage({ params }) {
             {post.content || <span className="text-[var(--text-weak)] italic">Conteúdo não disponível.</span>}
           </div>
 
+          {/* Ad Unit 2 - After Content */}
+          <AdInArticle adSlot="5544332211" />
+
           <RelatedPosts posts={relatedPosts} />
+
+          {/* Ad Unit 3 - After Related Posts */}
+          <AdBanner adSlot="6677889900" className="mt-8" />
         </article>
 
         {/* Sidebar */}

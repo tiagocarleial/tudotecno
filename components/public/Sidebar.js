@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PostCardWide from './PostCardWide';
+import AdSidebar from '@/components/ads/AdSidebar';
 
 const CATEGORIES = [
   { name: 'Tecnologia', slug: 'tecnologia', color: '#2859f1' },
@@ -27,6 +28,9 @@ export default function Sidebar({ latestPosts = [] }) {
           </div>
         </div>
       )}
+
+      {/* Ad Unit - Sidebar */}
+      <AdSidebar adSlot="9988776655" />
 
       {/* Categories */}
       <div className="bg-white rounded-xl border border-[var(--border)] p-4">

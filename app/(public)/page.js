@@ -2,6 +2,7 @@ import { getPosts, getLatestPosts } from '@/lib/posts';
 import HeroSection from '@/components/public/HeroSection';
 import PostGrid from '@/components/public/PostGrid';
 import Sidebar from '@/components/public/Sidebar';
+import AdBanner from '@/components/ads/AdBanner';
 
 // ISR: Revalida a cada 5 minutos (300 segundos)
 // Reduz chamadas ao banco Turso e melhora performance
@@ -41,9 +42,15 @@ export default async function HomePage({ searchParams }) {
     <div className="max-w-7xl mx-auto px-4 py-8">
       {page === 1 && <HeroSection posts={heroPosts} />}
 
+      {/* Ad Unit 1 - After Hero */}
+      {page === 1 && <AdBanner adSlot="1234567890" className="my-8" />}
+
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 min-w-0">
           <PostGrid posts={latestPosts} title="Últimas notícias" />
+
+          {/* Ad Unit 2 - After Posts */}
+          <AdBanner adSlot="0987654321" className="my-8" />
 
           {/* Página 1: botão Mais notícias recentes */}
           {page === 1 && pagination.totalPages > 1 && (
